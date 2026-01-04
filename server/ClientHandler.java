@@ -7,16 +7,32 @@ import tree.GenreTree;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * Handles client connections to the RecomTree server.
+ * Runs in a separate thread for each connected client.
+ * Reads commands from the client, executes them, and sends responses back.
+ */
 public class ClientHandler implements Runnable {
 
     private Socket socket;
     private GenreTree genreTree;
 
+    /**
+     * Constructs a ClientHandler for a new client connection.
+     *
+     * @param socket    the client socket
+     * @param genreTree the shared genre tree to operate on
+     */
     public ClientHandler(Socket socket, GenreTree genreTree) {
         this.socket = socket;
         this.genreTree = genreTree;
     }
 
+    /**
+     * Runs the client handler in a separate thread.
+     * Handles the communication protocol with the client,
+     * including welcoming messages, command parsing, and response delivery.
+     */
     @Override
     public void run() {
 
@@ -25,6 +41,7 @@ public class ClientHandler implements Runnable {
                         new InputStreamReader(socket.getInputStream()));
                 PrintWriter out = new PrintWriter(
                         socket.getOutputStream(), true)) {
+            // Send welcome message to client
             out.println("Welcome to RecomTree!");
             out.println("Available commands: ADD_MOVIE, LIST_SUBTREE, RATE, RECOMMEND");
             out.println("END");
@@ -32,6 +49,7 @@ public class ClientHandler implements Runnable {
             String line;
             while ((line = in.readLine()) != null) {
 
+                // Handle client disconnect
                 if (line.equalsIgnoreCase("QUIT")) {
                     out.println("Goodbye!");
                     out.println("END");
@@ -39,6 +57,7 @@ public class ClientHandler implements Runnable {
                     break;
                 }
 
+                // Parse and execute the command
                 Command command = CommandFactory.create(line, genreTree);
                 String response;
                 try {
@@ -48,6 +67,7 @@ public class ClientHandler implements Runnable {
                     System.err.println("Error executing command: " + e.getMessage());
                 }
 
+                // Send response to client
                 for (String l : response.split("\\R")) {
                     out.println(l);
                 }

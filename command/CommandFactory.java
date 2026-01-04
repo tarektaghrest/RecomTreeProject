@@ -3,8 +3,22 @@
 import tree.GenreTree;
 import java.util.Arrays;
 
+/**
+ * Factory class for creating Command objects based on user input.
+ * Parses command strings and instantiates the appropriate Command
+ * implementation.
+ * Provides validation and error handling for all supported commands.
+ */
 public class CommandFactory {
 
+    /**
+     * Creates a Command object from the given input string.
+     * Supported commands: ADD_MOVIE, LIST_SUBTREE, RATE, RECOMMEND
+     *
+     * @param input the user input string
+     * @param tree  the GenreTree to operate on
+     * @return a Command object ready to execute
+     */
     public static Command create(String input, GenreTree tree) {
         if (input == null || input.trim().isEmpty()) {
             return () -> "ERROR: Empty command.";
