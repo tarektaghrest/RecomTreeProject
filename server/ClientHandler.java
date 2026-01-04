@@ -35,6 +35,7 @@ public class ClientHandler implements Runnable {
                 if (line.equalsIgnoreCase("QUIT")) {
                     out.println("Goodbye!");
                     out.println("END");
+                    System.out.println("Client disconnected: " + socket.getInetAddress() + ":" + socket.getPort());
                     break;
                 }
 
@@ -54,7 +55,7 @@ public class ClientHandler implements Runnable {
             }
 
         } catch (IOException e) {
-            System.out.println("Client disconnected.");
+            System.out.println("Client disconnected: " + socket.getInetAddress() + ":" + socket.getPort());
         }
     }
 }
